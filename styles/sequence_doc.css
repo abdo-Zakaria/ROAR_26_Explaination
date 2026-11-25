@@ -1,0 +1,576 @@
+/* ==========================================================================
+   INSIDE ASU ROAR — SYSTEM ARCHITECTURE DOCUMENTARY & SEQUENCE EXPLORER
+   ========================================================================== */
+
+.arch-doc-section {
+  margin: 12px 0 56px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.arch-section-intro {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+  padding: 0 4px;
+  flex-wrap: wrap;
+}
+
+.arch-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+  margin-bottom: 6px;
+}
+
+.arch-main-heading {
+  font-size: clamp(21px, 2.2vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+}
+
+.arch-main-sub {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  max-width: 780px;
+  line-height: 1.5;
+}
+
+/* Documentary Video Selector Cards (1 Featured Main + 4 Deep Dives) */
+.arch-video-selector {
+  display: grid;
+  grid-template-columns: 1.45fr repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.arch-doc-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 15px;
+  border-radius: var(--radius-lg);
+  background: rgba(14, 18, 28, 0.86);
+  border: 1px solid var(--border-subtle);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.24s var(--ease-out-expo), border-color 0.24s, box-shadow 0.24s, background 0.24s;
+}
+
+.arch-doc-card.featured {
+  background: linear-gradient(135deg, rgba(255, 92, 53, 0.14), rgba(14, 19, 30, 0.94) 58%, rgba(56, 189, 248, 0.1));
+  border-color: rgba(255, 92, 53, 0.28);
+}
+
+.arch-doc-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(20, 26, 40, 0.96);
+}
+
+.arch-doc-card.is-active {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 0 1px var(--accent-cyan), 0 14px 36px rgba(56, 189, 248, 0.18);
+}
+
+.arch-doc-card.featured.is-active {
+  border-color: var(--accent-mars);
+  box-shadow: 0 0 0 1px var(--accent-mars), 0 16px 40px rgba(255, 92, 53, 0.22);
+}
+
+.arch-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.arch-card-code {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(56, 189, 248, 0.12);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+}
+
+.arch-doc-card.featured .arch-card-code {
+  background: rgba(255, 92, 53, 0.18);
+  color: #ff8c6b;
+  border-color: rgba(255, 92, 53, 0.38);
+}
+
+.arch-card-dur {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.arch-card-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+.arch-doc-card.featured .arch-card-title {
+  font-size: 15px;
+}
+
+.arch-card-meta {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Spacious Sequence Diagram Cinema Frame */
+.seq-player-frame {
+  position: relative;
+  width: 100%;
+  height: clamp(620px, 76vh, 800px);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.06), transparent 55%),
+    linear-gradient(180deg, #070a12 0%, #090d17 55%, #06080e 100%);
+  box-shadow: var(--shadow-stage);
+  overflow: hidden;
+  user-select: none;
+}
+
+/* Top Stage HUD */
+.seq-hud-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(7, 10, 17, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(12px);
+  z-index: 6;
+}
+
+.seq-hud-left,
+.seq-hud-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.seq-stage-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  font-size: 12px;
+  font-weight: 700;
+  color: #e0f2fe;
+  white-space: nowrap;
+}
+
+.seq-stage-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-cyan);
+}
+
+.seq-event-summary {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Compact 6-Type Communication Legend */
+.seq-comm-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 11px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.legend-swatch {
+  width: 12px;
+  height: 2.5px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.seq-mode-btn {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+
+.seq-mode-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-bright);
+}
+
+.seq-mode-btn.is-active {
+  color: #7dd3fc;
+  background: rgba(56, 189, 248, 0.14);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+.seq-player-frame.is-playing .voice-wave span:nth-child(1) { animation: eqPulse 0.7s infinite ease-in-out; }
+.seq-player-frame.is-playing .voice-wave span:nth-child(2) { animation: eqPulse 0.55s infinite ease-in-out 0.15s; }
+.seq-player-frame.is-playing .voice-wave span:nth-child(3) { animation: eqPulse 0.8s infinite ease-in-out 0.3s; }
+
+/* Interactive SVG Sequence Viewport */
+.seq-viewport {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 0;
+  bottom: 58px;
+  cursor: grab;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.seq-viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.seq-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* SVG Sequence Diagram Elements */
+.seq-header-card {
+  cursor: pointer;
+  transition: opacity 0.35s var(--ease-out-expo);
+}
+
+.seq-header-card .hdr-bg {
+  fill: rgba(13, 18, 29, 0.95);
+  stroke-width: 1.5;
+  transition: fill 0.2s, stroke-width 0.2s, filter 0.2s;
+}
+
+.seq-header-card:hover .hdr-bg,
+.seq-header-card.is-focused .hdr-bg {
+  fill: rgba(22, 31, 49, 0.99);
+  stroke-width: 2.5;
+  filter: drop-shadow(0 6px 18px rgba(56, 189, 248, 0.3));
+}
+
+.seq-lifeline-hit {
+  stroke: transparent;
+  stroke-width: 24;
+  cursor: pointer;
+}
+
+.seq-event-row {
+  cursor: pointer;
+  transition: opacity 0.32s var(--ease-out-expo);
+}
+
+.seq-event-hit {
+  stroke: transparent;
+  stroke-width: 28;
+  fill: none;
+}
+
+.seq-event-row:hover .seq-arrow-line,
+.seq-event-row.is-selected .seq-arrow-line {
+  stroke-width: 3.4 !important;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.45));
+}
+
+.seq-event-row:hover .seq-label-bg,
+.seq-event-row.is-selected .seq-label-bg {
+  stroke-width: 1.8;
+  fill: rgba(16, 24, 40, 0.98);
+}
+
+/* Initial Hero Play Overlay for Documentary */
+.seq-play-overlay {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 0;
+  bottom: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: radial-gradient(circle at center, rgba(7, 10, 18, 0.28), rgba(6, 9, 15, 0.66));
+  z-index: 5;
+  cursor: pointer;
+}
+
+.seq-play-overlay[hidden] {
+  display: none;
+}
+
+.seq-play-sub {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: #94a3b8;
+  background: rgba(8, 12, 20, 0.85);
+  padding: 4px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+/* Contextual Right-Docked Event & Participant Inspector */
+.seq-inspector-card {
+  position: absolute;
+  top: 62px;
+  right: 16px;
+  width: min(368px, 90%);
+  max-height: calc(100% - 140px);
+  overflow-y: auto;
+  background: rgba(9, 13, 22, 0.95);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  padding: 15px 16px;
+  box-shadow: var(--shadow-popover);
+  z-index: 8;
+  animation: popIn 0.2s var(--ease-spring);
+}
+
+.seq-inspector-card[hidden] {
+  display: none;
+}
+
+.insp-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.insp-kind-pill {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2.5px 8px;
+  border-radius: var(--radius-pill);
+  border: 1px solid currentColor;
+}
+
+.insp-verified-pill {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2.5px 7px;
+  border-radius: var(--radius-pill);
+  color: var(--accent-emerald);
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+}
+
+.insp-flow-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 8px 0 12px;
+  max-height: 170px;
+  overflow-y: auto;
+}
+
+.insp-flow-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 9px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  text-align: left;
+  font-size: 11px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.insp-flow-chip:hover {
+  background: rgba(56, 189, 248, 0.1);
+  border-color: rgba(56, 189, 248, 0.38);
+}
+
+.insp-flow-dir {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.insp-flow-dir.in {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.14);
+}
+
+.insp-flow-dir.out {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.14);
+}
+
+.insp-flow-label {
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+/* Corner Pan & Zoom Camera Cluster (inspired by reference diagram) */
+.seq-cam-pad {
+  position: absolute;
+  right: 16px;
+  bottom: 72px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  border-radius: 11px;
+  background: rgba(9, 13, 21, 0.86);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  z-index: 6;
+}
+
+.cam-pad-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  transition: background 0.15s, color 0.15s;
+}
+
+.cam-pad-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.cam-pad-btn.fit-btn {
+  width: auto;
+  padding: 0 9px;
+  font-size: 10.5px;
+}
+
+/* Sequence Captions Bar */
+.seq-caption-container {
+  position: absolute;
+  left: 50%;
+  bottom: 68px;
+  transform: translateX(-50%);
+  width: min(76%, 820px);
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 6;
+  transition: opacity 0.2s;
+}
+
+.seq-caption-container.captions-hidden {
+  opacity: 0;
+}
+
+/* Stage Jump Select inside Bottom Controls */
+.stage-jump-select {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  cursor: pointer;
+  max-width: 230px;
+}
+
+.stage-jump-select option {
+  background: #0f1522;
+  color: var(--text-primary);
+}
+
+@media (max-width: 1120px) {
+  .arch-video-selector {
+    grid-template-columns: 1fr 1fr;
+  }
+  .arch-doc-card.featured {
+    grid-column: 1 / -1;
+  }
+  .seq-comm-legend {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .arch-video-selector {
+    grid-template-columns: 1fr;
+  }
+  .seq-player-frame {
+    height: 560px;
+  }
+  .seq-event-summary,
+  .stage-jump-select {
+    display: none;
+  }
+}

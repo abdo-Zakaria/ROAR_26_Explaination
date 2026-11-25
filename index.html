@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASU ROAR 2026 — Interactive Visual Course</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/tokens.css" />
+  <link rel="stylesheet" href="styles/layout.css" />
+  <link rel="stylesheet" href="styles/player.css" />
+  <link rel="stylesheet" href="styles/sequence_doc.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Minimalist Top Bar -->
+    <header class="top-nav">
+      <div class="brand" id="brandHome" role="button" tabindex="0" aria-label="ASU ROAR Home">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="7" cy="17" r="2.5" />
+            <circle cx="17" cy="17" r="2.5" />
+            <path d="M4 13h16l-2-5H7l-3 5Z" />
+            <path d="M14 8V5l3-1" />
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">ASU ROAR 2026</span>
+          <span class="brand-tag">VISUAL EXPLAINER COURSE</span>
+        </div>
+      </div>
+
+      <nav class="nav-actions">
+        <button class="pill-btn active" id="navArchBtn" type="button">System Architecture</button>
+        <button class="pill-btn" id="navLessonsBtn" type="button">7 Visual Lessons</button>
+        <button class="pill-btn" id="navScenariosBtn" type="button">Scenario Replays</button>
+        <button class="pill-btn" id="navTheaterBtn" type="button">Theater View</button>
+      </nav>
+    </header>
+
+    <!-- Dominant 16:9 Animated Explainer Stage -->
+    <section class="cinema-section" aria-label="Interactive Video Player">
+      <div class="now-playing-bar">
+        <div class="now-playing-left">
+          <span class="lesson-pill" id="nowPlayingBadge">FEATURED INTRO</span>
+          <h1 class="now-playing-title" id="nowPlayingTitle">Meet the Autonomous Mars Rover</h1>
+          <span class="scene-step-label" id="nowPlayingStep">Scene 1 of 3</span>
+        </div>
+        <div class="now-playing-right">
+          <div class="hint-chip">
+            <span class="hint-dot"></span>
+            <span>Click any animated node or packet to pause &amp; inspect source</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="player-frame" id="playerFrame">
+        <!-- 60 FPS Canvas 2D Concept Visuals -->
+        <canvas class="stage-canvas" id="stageCanvas" width="1280" height="720"></canvas>
+
+        <!-- Interactive SVG Component & ROS 2 Data-Flow Layer -->
+        <svg class="stage-svg" id="stageSvg" viewBox="0 0 1280 720" preserveAspectRatio="xMidYMid meet"></svg>
+
+        <!-- Smooth Scene Transition Veil -->
+        <div class="scene-veil" id="sceneVeil"></div>
+
+        <!-- Top Stage HUD -->
+        <div class="stage-hud-top">
+          <div class="hud-scene-pill">
+            <span class="hud-scene-index" id="hudSceneIndex">01 / 03</span>
+            <span id="hudSceneTitle">Digital Twin on Mars</span>
+          </div>
+          <div class="hud-top-right">
+            <button class="insight-trigger-btn" id="insightTriggerBtn" type="button" hidden>
+              <span>⚡ Code Insight</span>
+            </button>
+            <div class="voice-badge" title="Active Narration Engine">
+              <span class="voice-wave"><span></span><span></span><span></span></span>
+              <span id="voiceModeLabel">MP3 · EN</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Initial Big Play Overlay -->
+        <div class="big-play-overlay" id="bigPlayOverlay" role="button" tabindex="0" aria-label="Start Watching">
+          <div class="big-play-btn">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5.14v14l11-7-11-7z" />
+            </svg>
+          </div>
+          <div class="big-play-label" id="bigPlayLabel">Watch Introduction</div>
+        </div>
+
+        <!-- Synchronized 1-2 Line English Captions -->
+        <div class="caption-container" id="captionContainer">
+          <div class="caption-box" id="captionBox"></div>
+        </div>
+
+        <!-- Interactive Component & Communication Event Popover -->
+        <div class="stage-popover" id="stagePopover" hidden></div>
+
+        <!-- Lesson Complete Overlay -->
+        <div class="end-overlay" id="endOverlay" hidden>
+          <div class="end-overlay-kicker" id="endOverlayKicker">Lesson Complete</div>
+          <div class="end-overlay-title" id="endOverlayTitle">Meet the Autonomous Mars Rover</div>
+          <div class="end-overlay-actions">
+            <button class="btn-secondary" id="endReplayBtn" type="button">↻ Replay</button>
+            <button class="btn-primary" id="endNextBtn" type="button">Next Lesson →</button>
+          </div>
+        </div>
+
+        <!-- Cinema Control Bar -->
+        <div class="player-controls">
+          <div class="timeline-wrap" id="timelineWrap" aria-label="Timeline Scrubber">
+            <div class="timeline-track">
+              <div class="timeline-fill" id="timelineFill"></div>
+              <div class="timeline-markers" id="timelineMarkers"></div>
+            </div>
+            <div class="timeline-thumb" id="timelineThumb"></div>
+            <div class="timeline-tooltip" id="timelineTooltip">0:00</div>
+          </div>
+
+          <div class="controls-row">
+            <div class="controls-left">
+              <button class="ctrl-btn play-toggle" id="playToggleBtn" type="button" title="Play / Pause (Space)" aria-label="Play">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v14l11-7-11-7z" /></svg>
+              </button>
+              <button class="ctrl-btn" id="restartBtn" type="button" title="Restart Lesson" aria-label="Restart">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                </svg>
+              </button>
+              <button class="ctrl-btn" id="prevSceneBtn" type="button" title="Previous Scene (←)" aria-label="Previous Scene">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
+                </svg>
+              </button>
+              <button class="ctrl-btn" id="nextSceneBtn" type="button" title="Next Scene (→)" aria-label="Next Scene">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                </svg>
+              </button>
+              <span class="time-readout" id="timeReadout">0:00 / 0:00</span>
+            </div>
+
+            <div class="controls-right">
+              <select class="speed-select" id="speedSelect" title="Playback Speed" aria-label="Playback Speed">
+                <option value="0.75">0.75×</option>
+                <option value="1" selected>1.0×</option>
+                <option value="1.25">1.25×</option>
+                <option value="1.5">1.5×</option>
+                <option value="2">2.0×</option>
+              </select>
+              <button class="ctrl-btn" id="muteBtn" type="button" title="Mute / Unmute (M)" aria-label="Mute"></button>
+              <button class="ctrl-btn is-active" id="captionsBtn" type="button" title="Captions On / Off (C)" aria-label="Toggle Captions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="5" width="20" height="14" rx="3" />
+                  <path d="M10 10.5a2 2 0 1 0 0 3" />
+                  <path d="M16 10.5a2 2 0 1 0 0 3" />
+                </svg>
+              </button>
+              <button class="ctrl-btn" id="theaterBtn" type="button" title="Theater Mode (T)" aria-label="Theater Mode">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="6" width="20" height="12" rx="2" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Introduction Card -->
+    <div id="featuredBannerHost"></div>
+
+    <!-- INSIDE ASU ROAR — SYSTEM ARCHITECTURE DOCUMENTARY & SEQUENCE EXPLORER -->
+    <section class="arch-doc-section" id="architectureSection" aria-label="Inside ASU ROAR System Architecture">
+      <div class="arch-section-intro">
+        <div>
+          <div class="arch-eyebrow">Engineering Architecture Documentary · Source-Verified Execution Trace</div>
+          <h2 class="arch-main-heading">INSIDE ASU ROAR — SYSTEM ARCHITECTURE</h2>
+          <p class="arch-main-sub">
+            Watch the real runtime execution unfold chronologically across processes, ROS 2 topics, services, actions, and TF frames—or pause and click any participant or communication arrow to inspect callbacks and source code.
+          </p>
+        </div>
+      </div>
+
+      <!-- 1 Main Documentary + 4 Deep-Dive Architecture Videos -->
+      <div class="arch-video-selector" id="archVideoSelector"></div>
+
+      <!-- Spacious Animated UML Sequence Diagram Player -->
+      <div class="seq-player-frame" id="seqPlayerFrame">
+        <!-- Top Sequence Stage HUD -->
+        <div class="seq-hud-top">
+          <div class="seq-hud-left">
+            <div class="seq-stage-pill">
+              <span class="seq-stage-num" id="seqStageNum">STAGE 01</span>
+              <span id="seqStageTitle">Operator &amp; Mission Init</span>
+            </div>
+            <span class="seq-event-summary" id="seqEventSummary">#1 · Select Rover Profile, World &amp; Waypoints</span>
+          </div>
+
+          <div class="seq-hud-right">
+            <div class="seq-comm-legend" title="Distinct ROS 2 &amp; Runtime Communication Types">
+              <span class="legend-item"><span class="legend-swatch" style="background:#38bdf8;"></span>Topic</span>
+              <span class="legend-item"><span class="legend-swatch" style="background:#fbbf24;"></span>Action</span>
+              <span class="legend-item"><span class="legend-swatch" style="background:#34d399;"></span>Service</span>
+              <span class="legend-item"><span class="legend-swatch" style="background:#a78bfa;"></span>TF2</span>
+              <span class="legend-item"><span class="legend-swatch" style="background:#ff5c35;"></span>Launch</span>
+              <span class="legend-item"><span class="legend-swatch" style="background:#60a5fa;"></span>Call</span>
+            </div>
+            <button class="seq-mode-btn is-active" id="seqProgressiveBtn" type="button" title="Toggle Progressive Reveal vs Full Sequence Diagram">
+              Progressive Reveal
+            </button>
+            <button class="seq-mode-btn is-active" id="seqAutoCamBtn" type="button" title="Toggle Automatic Camera Tracking">
+              Auto-Cam: ON
+            </button>
+            <div class="voice-badge" title="Active Narration Engine">
+              <span class="voice-wave"><span></span><span></span><span></span></span>
+              <span id="seqVoiceLabel">MP3 · EN</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Pan/Zoom SVG Sequence Diagram Viewport -->
+        <div class="seq-viewport" id="seqViewport">
+          <svg class="seq-svg" id="seqSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+
+        <!-- Initial Documentary Play Overlay -->
+        <div class="seq-play-overlay" id="seqPlayOverlay" role="button" tabindex="0" aria-label="Play Architecture Documentary">
+          <div class="big-play-btn">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5.14v14l11-7-11-7z" />
+            </svg>
+          </div>
+          <div class="big-play-label" id="seqPlayOverlayLabel">▶ Watch Main Architecture Documentary</div>
+          <div class="seq-play-sub" id="seqPlayOverlaySub">22 Chronological Execution Events · Progressive Sequence Diagram</div>
+        </div>
+
+        <!-- Contextual Event & Participant Inspector -->
+        <div class="seq-inspector-card" id="seqInspectorCard" hidden></div>
+
+        <!-- Synchronized 1-2 Line English Captions -->
+        <div class="seq-caption-container" id="seqCaptionContainer">
+          <div class="caption-box" id="seqCaptionBox"></div>
+        </div>
+
+        <!-- Corner Camera Pan/Zoom Controls -->
+        <div class="seq-cam-pad" aria-label="Diagram Camera Controls">
+          <button class="cam-pad-btn" id="seqCamLeft" type="button" title="Pan Left">◀</button>
+          <button class="cam-pad-btn" id="seqCamUp" type="button" title="Pan Up">▲</button>
+          <button class="cam-pad-btn" id="seqCamDown" type="button" title="Pan Down">▼</button>
+          <button class="cam-pad-btn" id="seqCamRight" type="button" title="Pan Right">▶</button>
+          <button class="cam-pad-btn" id="seqCamZoomOut" type="button" title="Zoom Out">−</button>
+          <button class="cam-pad-btn" id="seqCamZoomIn" type="button" title="Zoom In">+</button>
+          <button class="cam-pad-btn fit-btn" id="seqCamFit" type="button" title="Fit Active View">Fit</button>
+        </div>
+
+        <!-- Bottom Sequence Player Controls -->
+        <div class="player-controls">
+          <div class="timeline-wrap" id="seqTimelineWrap" aria-label="Architecture Documentary Timeline">
+            <div class="timeline-track">
+              <div class="timeline-fill" id="seqTimelineFill"></div>
+              <div class="timeline-markers" id="seqTimelineMarkers"></div>
+            </div>
+            <div class="timeline-thumb" id="seqTimelineThumb"></div>
+            <div class="timeline-tooltip" id="seqTimelineTooltip">0:00</div>
+          </div>
+
+          <div class="controls-row">
+            <div class="controls-left">
+              <button class="ctrl-btn play-toggle" id="seqPlayBtn" type="button" title="Play / Pause Documentary" aria-label="Play Documentary">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v14l11-7-11-7z" /></svg>
+              </button>
+              <button class="ctrl-btn" id="seqRestartBtn" type="button" title="Restart Documentary" aria-label="Restart">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                  <path d="M3 3v5h5" />
+                </svg>
+              </button>
+              <button class="ctrl-btn" id="seqPrevBtn" type="button" title="Previous Sequence Event" aria-label="Previous Event">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
+                </svg>
+              </button>
+              <button class="ctrl-btn" id="seqNextBtn" type="button" title="Next Sequence Event" aria-label="Next Event">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                </svg>
+              </button>
+              <span class="time-readout" id="seqTimeReadout">0:00 / 0:00</span>
+            </div>
+
+            <div class="controls-right">
+              <select class="stage-jump-select" id="seqStageSelect" title="Jump to Execution Stage" aria-label="Execution Stage"></select>
+              <select class="speed-select" id="seqSpeedSelect" title="Playback Speed" aria-label="Playback Speed">
+                <option value="0.75">0.75×</option>
+                <option value="1" selected>1.0×</option>
+                <option value="1.25">1.25×</option>
+                <option value="1.5">1.5×</option>
+                <option value="2">2.0×</option>
+              </select>
+              <button class="ctrl-btn" id="seqMuteBtn" type="button" title="Mute / Unmute" aria-label="Mute"></button>
+              <button class="ctrl-btn is-active" id="seqCaptionsBtn" type="button" title="Captions On / Off" aria-label="Toggle Captions">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="5" width="20" height="14" rx="3" />
+                  <path d="M10 10.5a2 2 0 1 0 0 3" />
+                  <path d="M16 10.5a2 2 0 1 0 0 3" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 Visual Lessons -->
+    <section class="lessons-section" id="lessonsSection" aria-label="Visual Course Lessons">
+      <div class="section-header">
+        <h2 class="section-title">Visual Lessons</h2>
+        <span class="section-meta" id="lessonsMeta">7 Lessons</span>
+      </div>
+      <div class="lessons-grid" id="lessonsGrid"></div>
+    </section>
+
+    <!-- 7 Educational Scenario Replays -->
+    <section class="scenarios-section" id="scenariosSection" aria-label="Educational Scenario Replays">
+      <div class="section-header">
+        <h2 class="section-title">Scenario Replays</h2>
+        <span class="section-meta">7 Verified ROS 2 Traces</span>
+      </div>
+      <div class="scenarios-grid" id="scenariosGrid"></div>
+    </section>
+  </div>
+
+  <!-- Verbatim Source Code & Optional Code Insight Modal -->
+  <div class="modal-backdrop" id="codeModalBackdrop" hidden>
+    <div class="code-modal" role="dialog" aria-modal="true" aria-labelledby="codeModalTitle">
+      <div class="code-modal-header">
+        <div>
+          <div class="code-modal-title" id="codeModalTitle">Source Inspector</div>
+          <div class="code-modal-path" id="codeModalPath"></div>
+        </div>
+        <button class="popover-close" id="codeModalClose" type="button" aria-label="Close Modal">✕</button>
+      </div>
+      <div class="code-modal-body" id="codeModalBody"></div>
+    </div>
+  </div>
+
+  <script src="js/data/course_bundle.js"></script>
+  <script src="js/data/architecture_docs_bundle.js"></script>
+  <script src="js/engine/pronunciation.js"></script>
+  <script src="js/engine/audio_engine.js"></script>
+  <script src="js/engine/stage_canvas.js"></script>
+  <script src="js/engine/stage_graph.js"></script>
+  <script src="js/engine/sequence_engine.js"></script>
+  <script src="js/ui/thumbnails.js"></script>
+  <script src="js/ui/popovers.js"></script>
+  <script src="js/ui/app.js"></script>
+  <script src="js/ui/arch_doc_app.js"></script>
+</body>
+</html>
